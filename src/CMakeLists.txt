@@ -1,4 +1,5 @@
 
+
 add_library(ezio  
     ezio/acceptor.cpp
     ezio/buffer.cpp
@@ -18,6 +19,7 @@ add_library(ezio
     ezio/thread.cpp
     ezio/worker_pool.cpp 
 )
+
 
 target_include_directories(ezio
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
@@ -47,4 +49,4 @@ if(UNIX)
         ezio/tcp_connection_posix.cpp
     )
 endif()
-target_link_libraries(ezio PUBLIC kbase)
+target_link_libraries(ezio PUBLIC  KBase::KBase)

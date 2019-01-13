@@ -1,0 +1,9 @@
+get_filename_component(KBase_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+
+if(NOT TARGET KBase::KBase)
+    include("${KBase_CMAKE_DIR}/KBaseTargets.cmake")
+endif()
+
+set(KBase_LIBRARIES KBase::KBase)
