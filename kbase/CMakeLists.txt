@@ -64,9 +64,6 @@ endif()
 set_target_properties(KBase PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "src/pch/precompile.h")
 cotire(KBase)
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/install)
-
-
 install(TARGETS KBase
     EXPORT  KBaseTargets
     LIBRARY DESTINATION lib
@@ -109,7 +106,7 @@ install(FILES
 )
 
 ##############################################
-export(EXPORT KBaseTargets FILE ${CMAKE_CURRENT_BINARY_DIR}/KBaseTargets.cmake  NAMESPACE KBase::)
+#export(EXPORT KBaseTargets FILE ${CMAKE_CURRENT_BINARY_DIR}/KBaseTargets.cmake  NAMESPACE KBase::)
 
 #Register package in user's package registry
-export(PACKAGE KBase)
+#export(PACKAGE KBase)
