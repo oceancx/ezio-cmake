@@ -1,7 +1,27 @@
 cmake_minimum_required(VERSION 3.5)
 project(EZIO VERSION 1.0.0 LANGUAGES CXX)
 
-list(INSERT CMAKE_PREFIX_PATH 0  ../install)
+#########################################################################
+configure_file(${CMAKE_SOURCE_DIR}/cmake/KBase-CMakeLists.txt.in ${CMAKE_BINARY_DIR}/kbase-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+  RESULT_VARIABLE result
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/kbase-download )
+if(result)
+  message(FATAL_ERROR "CMake step for kbase-download failed: ${result}")
+endif()
+
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+  RESULT_VARIABLE result
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/kbase-download )
+if(result)
+  message(FATAL_ERROR "Build step for kbase-download failed: ${result}")
+endif()
+
+
+#add_subdirectory(${CMAKE_BINARY_DIR}/kbase-cmake)
+
+
+list(INSERT CMAKE_PREFIX_PATH 0  ${CMAKE_BINARY_DIR}/install)
 find_package(KBase 1.0.0 REQUIRED)
 
 add_library(EZIO  
@@ -101,26 +121,3 @@ install(FILES
     DESTINATION lib/cmake/EZIO
 )
 
-#########################################################################
-configure_file(${CMAKE_SOURCE_DIR}/cmake/GoogleTest-CMakeLists.txt.in ${CMAKE_BINARY_DIR}/googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
-if(result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif()
-
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
-if(result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif()
-
-# Add googletest directly to our build. This defines
-# the gtest and gtest_main targets.
-add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
-                 ${CMAKE_BINARY_DIR}/googletest-build
-                 EXCLUDE_FROM_ALL)
-
-#target_link_libraries(EZIO gtest_main)

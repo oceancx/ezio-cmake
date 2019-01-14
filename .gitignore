@@ -1,4 +1,4 @@
 install/
 kbase/build
-ezio/build
 test/build
+build/
