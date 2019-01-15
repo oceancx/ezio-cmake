@@ -1,0 +1,3 @@
+[submodule "dependency/kbase-cmake"]
+	path = dependency/kbase-cmake
+	url = https://github.com/oceancx/kbase-cmake

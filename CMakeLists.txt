@@ -2,27 +2,31 @@ cmake_minimum_required(VERSION 3.5)
 project(EZIO VERSION 1.0.0 LANGUAGES CXX)
 
 #########################################################################
-configure_file(${CMAKE_SOURCE_DIR}/cmake/KBase-CMakeLists.txt.in ${CMAKE_BINARY_DIR}/kbase-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/kbase-download )
-if(result)
-  message(FATAL_ERROR "CMake step for kbase-download failed: ${result}")
+# configure_file(${CMAKE_SOURCE_DIR}/cmake/KBase-CMakeLists.txt.in ${CMAKE_BINARY_DIR}/kbase-download/CMakeLists.txt)
+# execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+#   RESULT_VARIABLE result
+#   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/kbase-download )
+# if(result)
+#   message(FATAL_ERROR "CMake step for kbase-download failed: ${result}")
+# endif()
+
+# execute_process(COMMAND ${CMAKE_COMMAND} --build .
+#   RESULT_VARIABLE result
+#   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/kbase-download )
+# if(result)
+#   message(FATAL_ERROR "Build step for kbase-download failed: ${result}")
+# endif()
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/dist CACHE PATH "..." FORCE)
 endif()
 
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/kbase-download )
-if(result)
-  message(FATAL_ERROR "Build step for kbase-download failed: ${result}")
-endif()
+add_subdirectory(dependency/kbase-cmake)
 
 
-#add_subdirectory(${CMAKE_BINARY_DIR}/kbase-cmake)
-
-
-list(INSERT CMAKE_PREFIX_PATH 0  ${CMAKE_BINARY_DIR}/install)
-find_package(KBase 1.0.0 REQUIRED)
+#list(INSERT CMAKE_PREFIX_PATH 0  ${CMAKE_BINARY_DIR}/install)
+#list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+#find_package(KBase 1.0.0 REQUIRED)
 
 add_library(EZIO  
     src/ezio/acceptor.cpp
@@ -75,7 +79,7 @@ target_include_directories(EZIO
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(EZIO PUBLIC  KBase::KBase)
+target_link_libraries(EZIO PUBLIC KBase)
 
 
 install(TARGETS EZIO
