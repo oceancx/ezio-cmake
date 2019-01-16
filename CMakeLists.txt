@@ -21,7 +21,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/dist CACHE PATH "..." FORCE)
 endif()
 
-find_package(KBase REQUIRED  PATHS "D:/Github/SimpleEngine/external/kbase-cmake/dist")  # PATHS "../kbase-cmake/dist"
+find_package(KBase)  # PATHS "../kbase-cmake/dist"
 
 add_library(EZIO  
     src/ezio/acceptor.cpp
