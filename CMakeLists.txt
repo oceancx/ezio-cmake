@@ -21,12 +21,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/dist CACHE PATH "..." FORCE)
 endif()
 
-add_subdirectory(dependency/kbase-cmake)
-
-
-#list(INSERT CMAKE_PREFIX_PATH 0  ${CMAKE_BINARY_DIR}/install)
-#list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
-#find_package(KBase 1.0.0 REQUIRED)
+find_package(KBase REQUIRED  PATHS "D:/Github/SimpleEngine/external/kbase-cmake/dist")  # PATHS "../kbase-cmake/dist"
 
 add_library(EZIO  
     src/ezio/acceptor.cpp
@@ -79,49 +74,7 @@ target_include_directories(EZIO
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(EZIO PUBLIC KBase)
+target_link_libraries(EZIO PUBLIC KBase::KBase)
 
-
-install(TARGETS EZIO
-    EXPORT  EZIOTargets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
-)
-
-set_target_properties(EZIO PROPERTIES EXPORT_NAME EZIO)
-
-install(DIRECTORY include/ DESTINATION include)
-
-
-install(EXPORT EZIOTargets
-    FILE
-        EZIOTargets.cmake 
-    NAMESPACE
-        EZIO::
-    DESTINATION
-        lib/cmake/EZIO
-)
-
-
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/EZIOConfigVersion.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY AnyNewerVersion
-)
-
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/EZIOConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/EZIOConfig.cmake
-    INSTALL_DESTINATION lib/cmake/EZIO
-)
-
-#Install the config, configversion and custom find modules
-install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/EZIOConfig.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/EZIOConfigVersion.cmake
-    DESTINATION lib/cmake/EZIO
-)
-
+include(cmake/HelperMacroFunction.cmake)
+export_library_macro(EZIO EZIO EZIO:: lib/cmake/ezio)
