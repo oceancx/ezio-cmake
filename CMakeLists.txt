@@ -23,7 +23,7 @@ endif()
 
 find_package(KBase)  # PATHS "../kbase-cmake/dist"
 
-add_library(EZIO  
+add_library(ezio  
     src/ezio/acceptor.cpp
     src/ezio/buffer.cpp
     src/ezio/connector_base.cpp
@@ -44,7 +44,7 @@ add_library(EZIO
 )
 
 if(WIN32)
-    target_sources(EZIO PRIVATE    
+    target_sources(ezio PRIVATE    
         src/ezio/acceptor_win.cpp
         src/ezio/connector_win.cpp
         src/ezio/event_pump_impl_win.cpp
@@ -54,7 +54,7 @@ if(WIN32)
         src/ezio/winsock_context.cpp
     )
 elseif(UNIX)
-    target_sources(EZIO PRIVATE    
+    target_sources(ezio PRIVATE    
         src/ezio/acceptor_posix.cpp
         src/ezio/buffer_posix.cpp
         src/ezio/connector_posix.cpp
@@ -66,7 +66,7 @@ elseif(UNIX)
     )
 endif()
 
-target_include_directories(EZIO
+target_include_directories(ezio
     PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -74,7 +74,7 @@ target_include_directories(EZIO
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(EZIO PUBLIC KBase::KBase)
+target_link_libraries(ezio PUBLIC KBase::KBase)
 
 include(cmake/HelperMacroFunction.cmake)
-export_library_macro(EZIO EZIO EZIO:: lib/cmake/ezio)
+export_library_macro(ezio EZIO EZIO:: lib/cmake/ezio)
