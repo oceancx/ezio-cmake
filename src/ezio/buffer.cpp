@@ -195,7 +195,7 @@ int64_t Buffer::ReadAsInt64()
 
 uint8_t Buffer::ReadAsUInt8()
 {
-	auto n = PeekAsInt64();
+	auto n = PeekAsUInt8();
 	Consume(sizeof(n));
 	return n;
 }
