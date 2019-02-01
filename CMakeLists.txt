@@ -73,7 +73,7 @@ target_include_directories(ezio
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-
+target_compile_features(ezio PUBLIC cxx_std_14)
 target_link_libraries(ezio PUBLIC KBase::KBase)
 
 include(cmake/HelperMacroFunction.cmake)
