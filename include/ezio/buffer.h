@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <sys/types.h>
 
 #include "kbase/basic_macros.h"
 

@@ -53,6 +53,17 @@ if(WIN32)
         src/ezio/tcp_connection_win.cpp
         src/ezio/winsock_context.cpp
     )
+elseif(APPLE)
+    target_sources(ezio PRIVATE    
+        src/ezio/acceptor_apple.cpp
+        src/ezio/buffer_posix.cpp
+        src/ezio/connector_posix.cpp
+        src/ezio/event_pump_impl_apple.cpp
+        src/ezio/ignore_sigpipe.cpp
+        src/ezio/notifier_posix.cpp
+        src/ezio/socket_utils_posix.cpp 
+        src/ezio/tcp_connection_posix.cpp
+    )
 elseif(UNIX)
     target_sources(ezio PRIVATE    
         src/ezio/acceptor_posix.cpp

@@ -14,12 +14,21 @@
 namespace ezio {
 namespace socket {
 
+#if defined(OS_APPLE)
+ScopedSocket CreateNonBlockingSocket()
+{
+    ScopedSocket sock_fd(::socket(AF_INET, SOCK_STREAM, 0));
+    ENSURE(THROW, sock_fd.get() > 0)(errno).Require();
+    return sock_fd;
+}
+#else
 ScopedSocket CreateNonBlockingSocket()
 {
     ScopedSocket sock_fd(::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0));
     ENSURE(THROW, sock_fd.get() > 0)(errno).Require();
     return sock_fd;
 }
+#endif
 
 void SetReuseAddr(const ScopedSocket& sock, bool enable)
 {
@@ -33,12 +42,14 @@ void SetReuseAddr(const ScopedSocket& sock, bool enable)
 
 void EnableTCPQuickACK(const ScopedSocket& sock)
 {
+#if !defined(OS_APPLE)
     int optval = 1;
     if (setsockopt(sock.get(), IPPROTO_TCP, TCP_QUICKACK, &optval, sizeof(optval)) < 0) {
         auto err = errno;
         LOG(ERROR) << "Enable socket TCP_QUICKACK failed: " << err;
         ENSURE(CHECK, kbase::NotReached())(err).Require();
     }
+#endif
 }
 
 bool IsSelfConnected(const ScopedSocket& sock)

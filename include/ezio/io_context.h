@@ -10,7 +10,9 @@
 
 #include "kbase/basic_macros.h"
 
-#if defined(OS_POSIX)
+#if defined(OS_APPLE)
+#include <sys/poll.h>
+#elif defined(OS_POSIX)
 #include <sys/epoll.h>
 #elif defined(OS_WIN)
 #include <Windows.h>
@@ -20,7 +22,10 @@ namespace ezio {
 
 enum IOEvent : uint32_t {
     None = 0,
-#if defined(OS_POSIX)
+#if defined(OS_APPLE)
+    Read = POLLIN | POLLPRI,
+    Write = POLLOUT
+#elif defined(OS_POSIX)
     Read = EPOLLIN | EPOLLPRI,
     Write = EPOLLOUT
 #elif defined(OS_WIN)

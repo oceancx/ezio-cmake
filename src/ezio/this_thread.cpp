@@ -10,7 +10,9 @@
 #include "kbase/string_encoding_conversions.h"
 
 #if defined(OS_POSIX)
+#if !defined(OS_APPLE)
 #include <sys/prctl.h>
+#endif
 #include <sys/syscall.h>
 #include <unistd.h>
 #endif
@@ -21,11 +23,16 @@ namespace {
 
 pid_t gettid()
 {
+#if !defined(OS_APPLE)
     return static_cast<pid_t>(syscall(SYS_gettid));
+#else
+    return 0;
+#endif
 }
 
 void SetNativeThreadName(const char* name)
 {
+#if !defined(OS_APPLE)
     ENSURE(CHECK, gettid() != getpid()).Require("DO NOT change main thread's name!");
 
     int rv = prctl(PR_SET_NAME, name);
@@ -33,6 +40,7 @@ void SetNativeThreadName(const char* name)
         auto err = errno;
         LOG(WARNING) << "prctl(PR_SET_NAME) failed: " << err;
     }
+#endif
 }
 
 #elif defined(OS_WIN)

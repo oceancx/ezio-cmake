@@ -9,7 +9,9 @@
 
 #include "ezio/notifier.h"
 
-#if defined(OS_POSIX)
+#if defined(OS_APPLE)
+#include "ezio/event_pump_impl_apple.h"
+#elif defined(OS_POSIX)
 #include "ezio/event_pump_impl_posix.h"
 #elif defined(OS_WIN)
 #include "ezio/event_pump_impl_win.h"
@@ -20,14 +22,14 @@ namespace ezio {
 EventPump::EventPump(EventLoop* loop)
     : impl_(std::make_unique<Impl>(loop))
 {
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
     impl_->EnableWakeupNotification();
 #endif
 }
 
 EventPump::~EventPump()
 {
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
     impl_->DisableWakeupNotification();
 #endif
 }

@@ -12,13 +12,13 @@
 
 #include "ezio/event_loop.h"
 
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
 #include <sys/timerfd.h>
 #endif
 
 namespace {
 
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
 
 constexpr std::chrono::microseconds kMinDuration {100};
 
@@ -75,13 +75,13 @@ namespace ezio {
 
 TimerQueue::TimerQueue(EventLoop* loop)
     : loop_(loop),
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
       timer_fd_(CreateTimerFD()),
       timer_notifier_(loop, timer_fd_),
 #endif
       processing_expired_timers_(false)
 {
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
     using namespace std::placeholders;
 
     timer_notifier_.set_on_read(std::bind(&TimerQueue::OnTimerExpired, this, _1));
@@ -91,7 +91,7 @@ TimerQueue::TimerQueue(EventLoop* loop)
 
 TimerQueue::~TimerQueue()
 {
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
     timer_notifier_.DisableAll();
     timer_notifier_.Detach();
 #endif
@@ -113,7 +113,7 @@ void TimerQueue::AddTimerInLoop(Timer* new_timer)
 
     auto new_earliest = Insert(std::unique_ptr<Timer>(new_timer));
     if (new_earliest) {
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
         ResetTimerFD(timer_fd_.get(), new_timer->expiration());
 #elif defined(OS_WIN)
         loop_->Wakeup();
@@ -205,7 +205,7 @@ std::pair<bool, TimePoint> TimerQueue::next_expiration() const
     return {true, timers_.begin()->first};
 }
 
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
 
 void TimerQueue::OnTimerExpired(TimePoint timestamp)
 {

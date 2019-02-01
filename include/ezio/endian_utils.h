@@ -10,8 +10,56 @@
 
 #include "kbase/basic_macros.h"
 
-#if defined(OS_POSIX)
+#if defined(OS_APPLE)
+#include "endian_apple.h"
+#elif defined(OS_POSIX)
 #include <endian.h>
+#endif
+
+#ifdef _MSC_VER
+
+#include <stdlib.h>
+#define bswap_32(x) _byteswap_ulong(x)
+#define bswap_64(x) _byteswap_uint64(x)
+
+#elif defined(__APPLE__)
+
+// Mac OS X / Darwin features
+#include <libkern/OSByteOrder.h>
+#define bswap_32(x) OSSwapInt32(x)
+#define bswap_64(x) OSSwapInt64(x)
+
+#elif defined(__sun) || defined(sun)
+
+#include <sys/byteorder.h>
+#define bswap_32(x) BSWAP_32(x)
+#define bswap_64(x) BSWAP_64(x)
+
+#elif defined(__FreeBSD__)
+
+#include <sys/endian.h>
+#define bswap_32(x) bswap32(x)
+#define bswap_64(x) bswap64(x)
+
+#elif defined(__OpenBSD__)
+
+#include <sys/types.h>
+#define bswap_32(x) swap32(x)
+#define bswap_64(x) swap64(x)
+
+#elif defined(__NetBSD__)
+
+#include <sys/types.h>
+#include <machine/bswap.h>
+#if defined(__BSWAP_RENAME) && !defined(__bswap_32)
+#define bswap_32(x) bswap32(x)
+#define bswap_64(x) bswap64(x)
+#endif
+
+#else
+
+#include <byteswap.h>
+
 #endif
 
 namespace ezio {
@@ -48,6 +96,13 @@ inline int64_t HostToNetwork(int64_t n) noexcept
 inline uint64_t HostToNetwork(uint64_t n) noexcept
 {
     return htobe64(n);
+}
+
+inline float HostToNetwork(float f) noexcept
+{
+	uint32_t n = *reinterpret_cast<uint32_t*>(&f);
+	n = bswap_32(n);
+	return *reinterpret_cast<float*>(&n);
 }
 
 #elif defined(OS_WIN)
@@ -126,6 +181,12 @@ inline uint64_t NetworkToHost(uint64_t n) noexcept
     return be64toh(n);
 }
 
+inline float NetworkToHost(float f) noexcept
+{
+    uint32_t n = *reinterpret_cast<uint32_t*>(&f);
+    n = bswap_32(n);
+    return *reinterpret_cast<float*>(&n);
+}
 #elif defined(OS_WIN)
 
 inline int16_t NetworkToHost(int16_t n) noexcept

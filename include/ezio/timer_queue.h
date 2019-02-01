@@ -52,14 +52,14 @@ private:
 
     void CancelInLoop(TimerID timer_id);
 
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
     void OnTimerExpired(TimePoint timestamp);
 #endif
 
 private:
     EventLoop* loop_;
 
-#if defined(OS_POSIX)
+#if defined(OS_POSIX) && !defined(OS_APPLE)
     kbase::ScopedFD timer_fd_;
     Notifier timer_notifier_;
 #endif
