@@ -46,7 +46,7 @@ SocketAddress::SocketAddress(NOT_NULL const char* ip, unsigned short port)
 std::string SocketAddress::ToHostPort() const
 {
     std::array<char, 16> ip {};
-    auto ip_ptr = inet_ntop(AF_INET, &addr_.sin_addr, ip.data(), ip.size());
+    auto ip_ptr = inet_ntop(AF_INET, (PVOID)&addr_.sin_addr, ip.data(), ip.size());
     ENSURE(CHECK, ip_ptr != nullptr)(socket::GetLastErrorCode()).Require();
 
     return kbase::StringPrintf("%s:%d", ip_ptr, NetworkToHost(addr_.sin_port));
